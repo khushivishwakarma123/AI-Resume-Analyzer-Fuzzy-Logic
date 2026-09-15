@@ -444,3 +444,83 @@ def get_category(score):
     else:
 
         return "Excellent Match"
+    # ==========================================================
+# FUZZY MEMBERSHIP VALUES
+# ==========================================================
+
+def get_membership_values(value):
+    """
+    Calculate the membership degree of a score
+    for Low, Medium and High fuzzy sets.
+    """
+
+    value = float(value)
+
+    # LOW
+    if value <= 0:
+        low = 1.0
+    elif value >= 40:
+        low = 0.0
+    else:
+        low = (40 - value) / 40
+
+    # MEDIUM
+    if value <= 20 or value >= 80:
+        medium = 0.0
+    elif value == 50:
+        medium = 1.0
+    elif value < 50:
+        medium = (value - 20) / 30
+    else:
+        medium = (80 - value) / 30
+
+    # HIGH
+    if value <= 60:
+        high = 0.0
+    elif value >= 100:
+        high = 1.0
+    else:
+        high = (value - 60) / 40
+
+    return {
+        "Low": round(low, 3),
+        "Medium": round(medium, 3),
+        "High": round(high, 3)
+    }
+
+
+# ==========================================================
+# GET FUZZY ANALYSIS
+# ==========================================================
+
+def get_fuzzy_analysis(
+    skill_match,
+    experience_match,
+    education_match,
+    project_match,
+    final_score
+):
+    """
+    Return membership values for all fuzzy inputs
+    and the final suitability category.
+    """
+
+    return {
+        "Skill Match": get_membership_values(skill_match),
+
+        "Experience Match": get_membership_values(
+            experience_match
+        ),
+
+        "Education Match": get_membership_values(
+            education_match
+        ),
+
+        "Project Match": get_membership_values(
+            project_match
+        ),
+
+        "Final Score": final_score,
+
+        "Category": get_category(final_score)
+    }
