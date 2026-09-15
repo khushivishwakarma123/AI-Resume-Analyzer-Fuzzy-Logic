@@ -5,11 +5,15 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 
+# ============================================================
+# 1. CREATE FUZZY SYSTEM
+# ============================================================
+
 def create_fuzzy_system():
 
-    # ==========================================
-    # 1. INPUT VARIABLES
-    # ==========================================
+    # ========================================================
+    # INPUT VARIABLES
+    # ========================================================
 
     skill_match = ctrl.Antecedent(
         np.arange(0, 101, 1),
@@ -31,20 +35,22 @@ def create_fuzzy_system():
         "project_match"
     )
 
-    # ==========================================
-    # 2. OUTPUT VARIABLE
-    # ==========================================
+    # ========================================================
+    # OUTPUT VARIABLE
+    # ========================================================
 
     suitability = ctrl.Consequent(
         np.arange(0, 101, 1),
         "suitability"
     )
 
-    # ==========================================
-    # 3. MEMBERSHIP FUNCTIONS
-    # ==========================================
+    # ========================================================
+    # 2. INPUT MEMBERSHIP FUNCTIONS
+    # ========================================================
 
-    # ---------- Skill Match ----------
+    # --------------------------------------------------------
+    # Skill Match
+    # --------------------------------------------------------
 
     skill_match["low"] = fuzz.trimf(
         skill_match.universe,
@@ -61,7 +67,9 @@ def create_fuzzy_system():
         [60, 100, 100]
     )
 
-    # ---------- Experience Match ----------
+    # --------------------------------------------------------
+    # Experience Match
+    # --------------------------------------------------------
 
     experience_match["low"] = fuzz.trimf(
         experience_match.universe,
@@ -78,7 +86,9 @@ def create_fuzzy_system():
         [60, 100, 100]
     )
 
-    # ---------- Education Match ----------
+    # --------------------------------------------------------
+    # Education Match
+    # --------------------------------------------------------
 
     education_match["low"] = fuzz.trimf(
         education_match.universe,
@@ -95,7 +105,9 @@ def create_fuzzy_system():
         [60, 100, 100]
     )
 
-    # ---------- Project Match ----------
+    # --------------------------------------------------------
+    # Project Match
+    # --------------------------------------------------------
 
     project_match["low"] = fuzz.trimf(
         project_match.universe,
@@ -112,9 +124,9 @@ def create_fuzzy_system():
         [60, 100, 100]
     )
 
-    # ==========================================
-    # 4. OUTPUT MEMBERSHIP FUNCTIONS
-    # ==========================================
+    # ========================================================
+    # 3. OUTPUT MEMBERSHIP FUNCTIONS
+    # ========================================================
 
     suitability["poor"] = fuzz.trimf(
         suitability.universe,
@@ -141,11 +153,14 @@ def create_fuzzy_system():
         [80, 100, 100]
     )
 
-    # ==========================================
-    # 5. FUZZY RULES
-    # ==========================================
+    # ========================================================
+    # 4. FUZZY RULES
+    # ========================================================
 
-    # Rule 1
+    # ========================================================
+    # EXCELLENT RULES
+    # ========================================================
+
     rule1 = ctrl.Rule(
         skill_match["high"]
         & experience_match["high"]
@@ -154,78 +169,173 @@ def create_fuzzy_system():
         suitability["excellent"]
     )
 
-    # Rule 2
     rule2 = ctrl.Rule(
+        skill_match["high"]
+        & experience_match["high"]
+        & project_match["high"],
+        suitability["excellent"]
+    )
+
+    rule3 = ctrl.Rule(
+        skill_match["high"]
+        & education_match["high"]
+        & project_match["high"],
+        suitability["excellent"]
+    )
+
+    # ========================================================
+    # GOOD RULES
+    # ========================================================
+
+    rule4 = ctrl.Rule(
         skill_match["high"]
         & experience_match["medium"]
         & project_match["high"],
         suitability["good"]
     )
 
-    # Rule 3
-    rule3 = ctrl.Rule(
+    rule5 = ctrl.Rule(
         skill_match["high"]
         & education_match["high"]
         & project_match["medium"],
         suitability["good"]
     )
 
-    # Rule 4
-    rule4 = ctrl.Rule(
-        skill_match["medium"]
-        & experience_match["medium"]
-        & education_match["high"],
-        suitability["moderate"]
-    )
-
-    # Rule 5
-    rule5 = ctrl.Rule(
-        skill_match["medium"]
-        & project_match["medium"],
-        suitability["moderate"]
-    )
-
-    # Rule 6
     rule6 = ctrl.Rule(
-        skill_match["low"]
-        & experience_match["low"],
-        suitability["poor"]
-    )
-
-    # Rule 7
-    rule7 = ctrl.Rule(
-        skill_match["low"]
-        & project_match["low"],
-        suitability["weak"]
-    )
-
-    # Rule 8
-    rule8 = ctrl.Rule(
         skill_match["high"]
         & experience_match["low"]
         & project_match["high"],
         suitability["good"]
     )
 
-    # Rule 9
-    rule9 = ctrl.Rule(
-        education_match["high"]
-        & skill_match["medium"]
+    rule7 = ctrl.Rule(
+        skill_match["medium"]
+        & education_match["high"]
         & project_match["high"],
         suitability["good"]
     )
 
-    # Rule 10
+    rule8 = ctrl.Rule(
+        skill_match["high"]
+        & education_match["medium"]
+        & project_match["high"],
+        suitability["good"]
+    )
+
+    # ========================================================
+    # MODERATE RULES
+    # ========================================================
+
+    rule9 = ctrl.Rule(
+        skill_match["medium"]
+        & experience_match["medium"]
+        & education_match["high"],
+        suitability["moderate"]
+    )
+
     rule10 = ctrl.Rule(
+        skill_match["medium"]
+        & project_match["medium"],
+        suitability["moderate"]
+    )
+
+    rule11 = ctrl.Rule(
+        skill_match["medium"]
+        & education_match["medium"]
+        & project_match["medium"],
+        suitability["moderate"]
+    )
+
+    rule12 = ctrl.Rule(
+        skill_match["high"]
+        & experience_match["medium"]
+        & project_match["medium"],
+        suitability["moderate"]
+    )
+
+    rule13 = ctrl.Rule(
+        skill_match["medium"]
+        & experience_match["high"]
+        & project_match["medium"],
+        suitability["moderate"]
+    )
+
+    # ========================================================
+    # WEAK RULES
+    # ========================================================
+
+    rule14 = ctrl.Rule(
         skill_match["medium"]
         & education_match["medium"]
         & project_match["low"],
         suitability["weak"]
     )
 
-    # ==========================================
-    # 6. CREATE CONTROL SYSTEM
-    # ==========================================
+    rule15 = ctrl.Rule(
+        skill_match["low"]
+        & project_match["medium"],
+        suitability["weak"]
+    )
+
+    rule16 = ctrl.Rule(
+        skill_match["medium"]
+        & experience_match["low"]
+        & education_match["low"],
+        suitability["weak"]
+    )
+
+    rule17 = ctrl.Rule(
+        skill_match["low"]
+        & education_match["medium"]
+        & project_match["low"],
+        suitability["weak"]
+    )
+
+    # ========================================================
+    # POOR RULES
+    # ========================================================
+
+    rule18 = ctrl.Rule(
+        skill_match["low"]
+        & experience_match["low"],
+        suitability["poor"]
+    )
+
+    rule19 = ctrl.Rule(
+        skill_match["low"]
+        & project_match["low"],
+        suitability["poor"]
+    )
+
+    rule20 = ctrl.Rule(
+        skill_match["low"]
+        & education_match["low"]
+        & project_match["low"],
+        suitability["poor"]
+    )
+
+    # ========================================================
+    # GENERAL COVERAGE RULES
+    # ========================================================
+
+    rule21 = ctrl.Rule(
+        skill_match["high"] | experience_match["high"],
+        suitability["good"]
+    )
+
+    rule22 = ctrl.Rule(
+        skill_match["medium"] | project_match["medium"],
+        suitability["moderate"]
+    )
+
+    rule23 = ctrl.Rule(
+        skill_match["low"] | experience_match["low"],
+        suitability["poor"]
+    )
+
+    # ========================================================
+    # 5. CREATE CONTROL SYSTEM
+    # ========================================================
 
     system = ctrl.ControlSystem([
         rule1,
@@ -237,15 +347,28 @@ def create_fuzzy_system():
         rule7,
         rule8,
         rule9,
-        rule10
+        rule10,
+        rule11,
+        rule12,
+        rule13,
+        rule14,
+        rule15,
+        rule16,
+        rule17,
+        rule18,
+        rule19,
+        rule20,
+        rule21,
+        rule22,
+        rule23
     ])
 
     return system
 
 
-# ==========================================
-# 7. FUZZY INFERENCE + DEFUZZIFICATION
-# ==========================================
+# ============================================================
+# 6. FUZZY INFERENCE + DEFUZZIFICATION
+# ============================================================
 
 def calculate_suitability(
     skill_score,
@@ -254,42 +377,70 @@ def calculate_suitability(
     project_score
 ):
 
+    # --------------------------------------------------------
+    # Create fuzzy control system
+    # --------------------------------------------------------
+
     system = create_fuzzy_system()
 
     simulation = ctrl.ControlSystemSimulation(system)
 
-    # Crisp inputs
+    # --------------------------------------------------------
+    # Provide crisp inputs
+    # --------------------------------------------------------
+
     simulation.input["skill_match"] = skill_score
+
     simulation.input["experience_match"] = experience_score
+
     simulation.input["education_match"] = education_score
+
     simulation.input["project_match"] = project_score
 
+    # --------------------------------------------------------
     # Perform fuzzy inference
+    # --------------------------------------------------------
+
     simulation.compute()
 
-    # Defuzzified output
+    # --------------------------------------------------------
+    # Defuzzification
+    # --------------------------------------------------------
+
+    if "suitability" not in simulation.output:
+
+        raise ValueError(
+            "Fuzzy inference could not produce a suitability score. "
+            "Please check the input scores and fuzzy rules."
+        )
+
     final_score = simulation.output["suitability"]
 
     return round(final_score, 2)
 
 
-# ==========================================
-# 8. RESULT CATEGORY
-# ==========================================
+# ============================================================
+# 7. RESULT CATEGORY
+# ============================================================
 
 def get_category(score):
 
     if score < 30:
+
         return "Poor Match"
 
     elif score < 50:
+
         return "Weak Match"
 
     elif score < 70:
+
         return "Moderate Match"
 
     elif score < 85:
+
         return "Good Match"
 
     else:
+
         return "Excellent Match"
